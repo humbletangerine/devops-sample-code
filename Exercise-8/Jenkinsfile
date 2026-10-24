@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    stages {
+        stage('Hello World') {
+            steps {
+                dir('Exercise-8') {
+                    sh 'chmod +x hello-world.sh'
+                    sh './hello-world.sh'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Hello World job completed successfully.'
+        }
+    }
+}

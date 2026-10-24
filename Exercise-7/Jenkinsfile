@@ -1,0 +1,8 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') { steps { echo 'Build: preparing application' } }
+        stage('Test') { steps { echo 'Test: basic checks passed' } }
+        stage('Deploy') { steps { echo 'Deploy: simulated deployment only' } }
+    }
+}

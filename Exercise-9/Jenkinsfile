@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                dir('Exercise-9') {
+                    sh '''
+                        python3 -m venv .venv
+                        .venv/bin/python -m pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                dir('Exercise-9') {
+                    sh '.venv/bin/python -m unittest discover -s . -v'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir('Exercise-9') {
+                    sh '''
+                        mkdir -p python-app-deploy
+                        cp app.py requirements.txt python-app-deploy/
+                        echo 'Deployment files copied successfully'
+                    '''
+                }
+            }
+        }
+        stage('Test Deployed Application') {
+            steps {
+                dir('Exercise-9') {
+                    sh '''
+                        cd python-app-deploy
+                        ../.venv/bin/python -c 'from app import app; assert app.test_client().get("/").status_code == 200; print("Deployed app test passed")'
+                    '''
+                }
+            }
+        }
+    }
+    post {
+        success { echo 'Pipeline completed successfully!' }
+        failure { echo 'Pipeline failed. Check console output.' }
+    }
+}
